@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/trayracer.exe",
-            "args": ["-v"],
+            "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/bin",
             "environment": [],
