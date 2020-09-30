@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/oem/Repos/trayracer && $(CMAKE_COMMAND) -E cmake_progress_start /home/oem/Repos/trayracer/CMakeFiles /home/oem/Repos/trayracer/exts/glew/CMakeFiles/progress.marks
-	cd /home/oem/Repos/trayracer && $(MAKE) -f CMakeFiles/Makefile2 exts/glew/all
+	cd /home/oem/Repos/trayracer && $(CMAKE_COMMAND) -E cmake_progress_start /home/oem/Repos/trayracer/CMakeFiles /home/oem/Repos/trayracer/exts/glfw/CMakeFiles/progress.marks
+	cd /home/oem/Repos/trayracer && $(MAKE) -f CMakeFiles/Makefile2 exts/glfw/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/oem/Repos/trayracer/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/oem/Repos/trayracer && $(MAKE) -f CMakeFiles/Makefile2 exts/glew/clean
+	cd /home/oem/Repos/trayracer && $(MAKE) -f CMakeFiles/Makefile2 exts/glfw/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,60 +97,18 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/oem/Repos/trayracer && $(MAKE) -f CMakeFiles/Makefile2 exts/glew/preinstall
+	cd /home/oem/Repos/trayracer && $(MAKE) -f CMakeFiles/Makefile2 exts/glfw/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/oem/Repos/trayracer && $(MAKE) -f CMakeFiles/Makefile2 exts/glew/preinstall
+	cd /home/oem/Repos/trayracer && $(MAKE) -f CMakeFiles/Makefile2 exts/glfw/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
 	cd /home/oem/Repos/trayracer && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
-
-# Convenience name for target.
-exts/glew/CMakeFiles/glew.dir/rule:
-	cd /home/oem/Repos/trayracer && $(MAKE) -f CMakeFiles/Makefile2 exts/glew/CMakeFiles/glew.dir/rule
-.PHONY : exts/glew/CMakeFiles/glew.dir/rule
-
-# Convenience name for target.
-glew: exts/glew/CMakeFiles/glew.dir/rule
-
-.PHONY : glew
-
-# fast build rule for target.
-glew/fast:
-	cd /home/oem/Repos/trayracer && $(MAKE) -f exts/glew/CMakeFiles/glew.dir/build.make exts/glew/CMakeFiles/glew.dir/build
-.PHONY : glew/fast
-
-src/glew.o: src/glew.c.o
-
-.PHONY : src/glew.o
-
-# target to build an object file
-src/glew.c.o:
-	cd /home/oem/Repos/trayracer && $(MAKE) -f exts/glew/CMakeFiles/glew.dir/build.make exts/glew/CMakeFiles/glew.dir/src/glew.c.o
-.PHONY : src/glew.c.o
-
-src/glew.i: src/glew.c.i
-
-.PHONY : src/glew.i
-
-# target to preprocess a source file
-src/glew.c.i:
-	cd /home/oem/Repos/trayracer && $(MAKE) -f exts/glew/CMakeFiles/glew.dir/build.make exts/glew/CMakeFiles/glew.dir/src/glew.c.i
-.PHONY : src/glew.c.i
-
-src/glew.s: src/glew.c.s
-
-.PHONY : src/glew.s
-
-# target to generate assembly for a file
-src/glew.c.s:
-	cd /home/oem/Repos/trayracer && $(MAKE) -f exts/glew/CMakeFiles/glew.dir/build.make exts/glew/CMakeFiles/glew.dir/src/glew.c.s
-.PHONY : src/glew.c.s
 
 # Help Target
 help:
@@ -160,10 +118,6 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... glew"
-	@echo "... src/glew.o"
-	@echo "... src/glew.i"
-	@echo "... src/glew.s"
 .PHONY : help
 
 

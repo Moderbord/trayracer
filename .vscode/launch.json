@@ -6,10 +6,10 @@
     "configurations": [
         {
             "name": "Debug project",
-            "type": "cppvsdbg",
+            "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/trayracer.exe",
-            "args": [],
+            "args": ["-v"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/bin",
             "environment": [],

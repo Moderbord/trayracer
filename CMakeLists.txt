@@ -32,24 +32,11 @@ SET_PROPERTY(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS GLEW_STATIC)
 
 ADD_SUBDIRECTORY(exts)
 
-SET(files
-		main.cc
-		window.h
-		window.cc
-		vec3.h
-		color.h
-		mat4.h
-		object.h
-		pbr.h
-		ray.h
-		raytracer.h
-		raytracer.cc
-		sphere.h
-		random.h
-		random.cc
-		material.h
-		material.cc
-	)
+FILE(GLOB source_files code/*.cc)
+FILE(GLOB header_files code/*.h)
+
+SET(files ${source_files} ${header_files})
+
 SOURCE_GROUP("trayracer" FILES ${files})
 
 ADD_EXECUTABLE(trayracer ${files})
