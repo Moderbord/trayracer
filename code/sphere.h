@@ -24,9 +24,9 @@ class Sphere : public Object
 public:
     float radius;
     vec3 center;
-    Material const* const material;
+    Material material;
 
-    Sphere(float radius, vec3 center, Material const* const material) : 
+    Sphere(float radius, vec3 center, Material& material) : 
         radius(radius),
         center(center),
         material(material)
@@ -36,12 +36,12 @@ public:
 
     ~Sphere() override
     {
-    
+
     }
 
     Color GetColor()
     {
-        return material->color;
+        return material.color;
     }
 
     bool Intersect(HitResult& hit, Ray ray, float maxDist) override
@@ -89,7 +89,7 @@ public:
 
     Ray ScatterRay(Ray ray, vec3 point, vec3 normal) override
     {
-        return BSDF(this->material, ray, point, normal);
+        return BSDF(material, ray, point, normal);
     }
 
 };

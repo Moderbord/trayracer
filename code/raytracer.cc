@@ -69,7 +69,10 @@ Raytracer::TracePath(Ray ray, unsigned n)
         Ray* scatteredRay = new Ray(hitObject->ScatterRay(ray, hitPoint, hitNormal));
         if (n < this->bounces)
         {
-            return hitObject->GetColor() * this->TracePath(*scatteredRay, n + 1);
+            Color col = hitObject->GetColor() * this->TracePath(*scatteredRay, n + 1);
+            delete scatteredRay;
+
+            return col;
         }
         delete scatteredRay;
 

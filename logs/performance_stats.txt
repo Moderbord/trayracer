@@ -1,4 +1,5 @@
 // Before any optimization 
+
 Completed in [42.985981] seconds, with a total of [10000000] rays, [0.232634] MRays/s 
 Image dimensions: 1000x500
 Rays per pixel: 20
