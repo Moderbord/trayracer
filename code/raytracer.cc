@@ -143,9 +143,9 @@ Raytracer::UpdateMatrices()
 /**
 */
 Color
-Raytracer::Skybox(vec3 direction)
+Raytracer::Skybox(vec3 direction) // wtf?
 {
     float t = 0.5*(direction.y + 1.0);
-    vec3 vec = vec3(1.0, 1.0, 1.0) * (1.0 - t) + vec3(0.5, 0.7, 1.0) * t;
-    return {(float)vec.x, (float)vec.y, (float)vec.z};
+    vec3 vec = vec3(1.0, 1.0, 1.0) * (1.0 - t) + vec3(0.5, 0.7, 1.0) * t; // predefine? neccessary?
+    return {(float)vec.x, (float)vec.y, (float)vec.z}; // remove casts
 }

@@ -16,7 +16,7 @@ unsigned int raysPerPixel = 1;
 unsigned int maxBounces = 5;
 bool verbose = false;
 bool outputToFile = false;
-std::string filepath = "../out/image.jpg";
+std::string filepath = "../out/image";
 
 int render()
 {
@@ -89,7 +89,8 @@ int render()
 
 
     
-    stbi_write_jpg(filepath.c_str(), width, height, 3, (float*)&framebuffer[0], 100);
+    //stbi_write_jpg(filepath.c_str(), width, height, 3, (float*)&framebuffer[0], 100);
+    stbi_write_bmp(filepath.c_str(), width, height, 3, (float*)&framebuffer[0]);
 
     return 0;
 }
