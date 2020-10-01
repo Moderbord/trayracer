@@ -1,3 +1,7 @@
+/*
+* This is a personal academic project. Dear PVS-Studio, please check it.
+* PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
+*/
 #include <stdio.h>
 #include <chrono>
 //#include "window.h"
@@ -9,7 +13,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-#define degtorad(angle) angle * MPI / 180
+#define degtorad(angle) ((angle) * MPI / 180)
 
 unsigned int width = 200;
 unsigned int height = 150;

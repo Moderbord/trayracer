@@ -2,6 +2,7 @@
 #include <cmath>
 #include <initializer_list>
 #include <assert.h>
+#include <float.h>
 
 #define MPI 3.14159265358979323846
 
@@ -20,23 +21,6 @@ public:
         this->UpdateIsZeroVariable();
     }
 
-    vec3(std::initializer_list<double> const il)
-    {
-        assert(il.size() == 3);
-
-        int i = 0;
-        for (auto v : il)
-        {
-            double* d = reinterpret_cast<double*>(this);
-            d += i;
-            *d = v;
-            i++;
-        }
-
-        this->UpdateIsNormalizedVariable();
-        this->UpdateIsZeroVariable();
-    }
-
     ~vec3()
     {
     }
@@ -50,11 +34,20 @@ public:
         this->UpdateIsNormalizedVariable();
         this->UpdateIsZeroVariable();
     }
+    vec3& operator=(const vec3& rhs)
+    {
+        this->x = rhs.x;
+        this->y = rhs.y;
+        this->z = rhs.z;
 
-    vec3 operator+(vec3 const& rhs) { return {x + rhs.x, y + rhs.y, z + rhs.z};}
-    vec3 operator-(vec3 const& rhs) { return {x - rhs.x, y - rhs.y, z - rhs.z};}
+        this->UpdateIsNormalizedVariable();
+        this->UpdateIsZeroVariable();
+        return *this;
+    }
+    vec3 operator+(const vec3& rhs) { return {x + rhs.x, y + rhs.y, z + rhs.z};}
+    vec3 operator-(const vec3& rhs) { return {x - rhs.x, y - rhs.y, z - rhs.z};}
     vec3 operator-() { return {-x, -y, -z};}
-    vec3 operator*(float const c) { return {x * c, y * c, z * c};}
+    vec3 operator*(const float c) { return {x * c, y * c, z * c};}
 
     double x, y, z;
 
@@ -82,7 +75,7 @@ inline double len(vec3 const& v)
 inline vec3 normalize(vec3 v)
 {
     double l = len(v);
-    if (l == 0)
+    if (l < 0)
         return vec3(0,0,0);
 
     vec3 ret = vec3(v.x / l, v.y / l, v.z / l);
@@ -91,7 +84,7 @@ inline vec3 normalize(vec3 v)
 
 inline void vec3::UpdateIsNormalizedVariable()
 {
-    if (len(*this) == 1.0)
+    if (fabs(len(*this) - 1.0) < FLT_EPSILON)
     {
         this->isNormalized = true;
         return;
@@ -102,7 +95,7 @@ inline void vec3::UpdateIsNormalizedVariable()
 
 inline void vec3::UpdateIsZeroVariable()
 {
-    if (len(*this) == 0.0)
+    if (len(*this) < FLT_EPSILON)
     {
         this->isZero = true;
         return;

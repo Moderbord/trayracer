@@ -149,7 +149,7 @@ inverse(mat4 m)
 {
     float s = det(m);
     
-    if (s == 0.0) 
+    if (s < FLT_EPSILON) 
 		return {1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1}; // cannot inverse, make it identity matrix
 
     s = 1.0f / s;
@@ -224,7 +224,8 @@ rotationx(float angle)
 	float c;
 	float s;
 
-	if (angle == 180.0f){
+	if (fabs(angle - 180.0f) < FLT_EPSILON)
+    {
 		result = MPI;
 		s = 0;
 	}
@@ -251,7 +252,7 @@ rotationy(float angle)
 	float c;
 	float s;
 
-	if (angle == 180.0f){
+	if (fabs(angle - 180.0f) < FLT_EPSILON){
 		result = MPI;
 		s = 0;
 	}
@@ -265,5 +266,17 @@ rotationy(float angle)
 	return {  c, 0, s, 0,
 			  0, 1, 0, 0,
 			 -s, 0, c, 0,
+              0, 0, 0, 1 };
+}
+
+//------------------------------------------------------------------------------
+/**
+*/
+inline mat4
+identity()
+{
+	return {  1, 0, 0, 0,
+			  0, 1, 0, 0,
+			  0, 0, 1, 0,
               0, 0, 0, 1 };
 }
