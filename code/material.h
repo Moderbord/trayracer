@@ -7,15 +7,21 @@
 //------------------------------------------------------------------------------
 /**
 */
-struct Material
+enum TYPE
 {
-    
+    Lambertian,
+    Dielectric,
+    Conductor
+};
+struct Material
+
+{
     /*
         type can be "Lambertian", "Dielectric" or "Conductor".
         Obviously, "lambertian" materials are dielectric, but we separate them here
         just because figuring out a good IOR for ex. plastics is too much work
     */
-    std::string type = "Lambertian";
+    TYPE type = Lambertian;
     Color color = {0.5f,0.5f,0.5f};
     float roughness = 0.75;
 

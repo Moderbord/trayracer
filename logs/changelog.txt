@@ -4,3 +4,5 @@
 4. Made other classes use const and reference parameters : ~0.70 MRays -> ~1.25 MRays 
 5. Pre-calculate ray distribution : ~1.25 MRays -> ~1.36 MRays 
 --
+6. Changed material type into enum : +- 0 MRays
+--

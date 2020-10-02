@@ -17,10 +17,10 @@ BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& no
 {
     float cosTheta = -dot(normalize(ray.m), normalize(normal));
 
-    if (material.type != "Dielectric")
+    if (material.type != Dielectric)
     {
         float F0 = 0.04f;
-        if (material.type == "Conductor")
+        if (material.type == Conductor)
         {
             F0 = 0.95f;
         }

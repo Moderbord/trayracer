@@ -30,38 +30,38 @@ int render()
 
     // Create some objects
     Material mat;
-    mat.type = "Lambertian";
+    mat.type = Lambertian;
     mat.color = { 0.5,0.5,0.5 };
     mat.roughness = 0.3;
     Sphere* ground = new Sphere(1000, { 0,-1000, -1 }, mat);
     rt.AddObject(ground);
     
-    mat.type = "Conductor";
+    mat.type = Conductor;
     mat.color = {1,1,1};
     mat.roughness = 0.2f;
     Sphere* test1 = new Sphere(1, { 0,1,0 }, mat);
     rt.AddObject(test1);
 
-    mat.type = "Lambertian";
+    mat.type = Lambertian;
     mat.color = { 0,0.4,0.6 };
     mat.roughness = 0.2;
     Sphere* test2 = new Sphere(1, { -4,1,0 }, mat);
     rt.AddObject(test2);
 
-    mat.type = "Dielectric";
+    mat.type = Dielectric;
     mat.color = { 1,0.8,0.7 };
     mat.roughness = 0.95;
     mat.refractionIndex = 1.65;
     Sphere* test3 = new Sphere(1, { -4,1, 2 }, mat);
     rt.AddObject(test3);
 
-    mat.type = "Lambertian";
+    mat.type = Lambertian;
     mat.color = { 1,0,0.2 };
     mat.roughness = 0.04;
     Sphere* test4 = new Sphere(1, { 1,1, -3 }, mat);
     rt.AddObject(test4);
 
-    mat.type = "Lambertian";
+    mat.type = Lambertian;
     mat.color = { 1,1,1 };
     mat.roughness = 0.0;
     Sphere* test5 = new Sphere(1, { 4,1, 0 }, mat);
