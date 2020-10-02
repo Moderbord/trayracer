@@ -11,70 +11,55 @@ class vec3
 public:
     vec3() : x(0), y(0), z(0)
     {
-        this->UpdateIsNormalizedVariable();
-        this->UpdateIsZeroVariable();
     }
 
-    vec3(double x, double y, double z) : x(x), y(y), z(z)
+    vec3(const float& x, const float& y, const float& z) : x(x), y(y), z(z)
     {
-        this->UpdateIsNormalizedVariable();
-        this->UpdateIsZeroVariable();
     }
 
     ~vec3()
     {
     }
 
-    vec3(vec3 const& rhs)
+    vec3(const vec3& rhs)
     {
         this->x = rhs.x;
         this->y = rhs.y;
         this->z = rhs.z;
-
-        this->UpdateIsNormalizedVariable();
-        this->UpdateIsZeroVariable();
     }
     vec3& operator=(const vec3& rhs)
     {
         this->x = rhs.x;
         this->y = rhs.y;
         this->z = rhs.z;
-
-        this->UpdateIsNormalizedVariable();
-        this->UpdateIsZeroVariable();
         return *this;
     }
-    vec3 operator+(const vec3& rhs) { return {x + rhs.x, y + rhs.y, z + rhs.z};}
-    vec3 operator-(const vec3& rhs) { return {x - rhs.x, y - rhs.y, z - rhs.z};}
-    vec3 operator-() { return {-x, -y, -z};}
-    vec3 operator*(const float c) { return {x * c, y * c, z * c};}
+    vec3 operator+(const vec3& rhs) const { return {x + rhs.x, y + rhs.y, z + rhs.z};}
+    vec3 operator-(const vec3& rhs) const { return {x - rhs.x, y - rhs.y, z - rhs.z};}
+    vec3 operator-() const { return {-x, -y, -z};}
+    vec3 operator*(const float& c) const { return {x * c, y * c, z * c};}
 
-    double x, y, z;
+    float x, y, z;
 
 private:
-    // Calculate if the vector is normalized
-    void UpdateIsNormalizedVariable();
-    // Calculate if the vector is zero
-    void UpdateIsZeroVariable();
-
-    volatile bool isNormalized;
-    volatile bool isZero;
+    bool isNormalized;
+    bool isZero;
 };
 
 // Get length of 3D vector
-inline double len(vec3 const& v)
+inline float len(const vec3& v)
 {
-    double a = v.x * v.x;
+    float a = v.x * v.x;
     a = a + v.y * v.y;
     a = a + v.z * v.z;
-    double l = sqrt(a);
+    float l = sqrt(a);
     return l;
 }
 
 // Get normalized version of v
-inline vec3 normalize(vec3 v)
+inline vec3 normalize(const vec3& v)
 {
-    double l = len(v);
+    float l = len(v);
     if (l < 0)
         return vec3(0,0,0);
 
@@ -82,51 +67,29 @@ inline vec3 normalize(vec3 v)
     return vec3(ret);
 }
 
-inline void vec3::UpdateIsNormalizedVariable()
-{
-    if (fabs(len(*this) - 1.0) < FLT_EPSILON)
-    {
-        this->isNormalized = true;
-        return;
-    }
-    
-    this->isNormalized = false;
-}
-
-inline void vec3::UpdateIsZeroVariable()
-{
-    if (len(*this) < FLT_EPSILON)
-    {
-        this->isZero = true;
-        return;
-    }
-    
-    this->isZero = false;
-}
-
 // piecewise multiplication between two vectors
-inline vec3 mul(vec3 a, vec3 b)
+inline vec3 mul(const vec3& a, const vec3& b)
 {
     return {a.x * b.x, a.y * b.y, a.z * b.z};
 }
 
 // piecewise add between two vectors
-inline vec3 add(vec3 a, vec3 b)
+inline vec3 add(const vec3& a, const vec3& b)
 {
     return {a.x + b.x, a.y + b.y, a.z + b.z};
 }
 
-inline float dot(vec3 a, vec3 b)
+inline float dot(const vec3& a, const vec3& b)
 {
     return a.x * b.x + a.y * b.y + a.z * b.z;
 }
 
-inline vec3 reflect(vec3 v, vec3 n)
+inline vec3 reflect(const vec3& v, const vec3& n)
 {
-    return v - n * (2 * dot(v,n));
+    return v - n * (2 * dot(v, n));
 }
 
-inline vec3 cross(vec3 a, vec3 b)
+inline vec3 cross(const vec3& a, const vec3& b)
 {
     return { a.y * b.z - a.z * b.y,
              a.z * b.x - a.x * b.z,

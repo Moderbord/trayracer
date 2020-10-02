@@ -7,7 +7,7 @@
 /**
 */
 inline float
-FresnelSchlick(float cosTheta, float F0, float roughness)
+FresnelSchlick(const float& cosTheta, const float& F0, const float& roughness)
 {
     return F0 + (fmax(1.0f - roughness, F0) - F0) * pow(2, ((-5.55473f*cosTheta - 6.98316f) * cosTheta));
 }
@@ -16,7 +16,7 @@ FresnelSchlick(float cosTheta, float F0, float roughness)
 /**
 */
 inline vec3
-ImportanceSampleGGX_VNDF(float u1, float u2, float roughness, vec3 const& V, mat4 const& basis)
+ImportanceSampleGGX_VNDF(const float& u1, const float& u2, const float& roughness, const vec3& V, const mat4& basis)
 {
     float alpha = roughness * roughness;
 
@@ -50,7 +50,7 @@ ImportanceSampleGGX_VNDF(float u1, float u2, float roughness, vec3 const& V, mat
 /**
 */
 inline bool
-Refract(vec3 v, vec3 n, float niOverNt, vec3& refracted)
+Refract(const vec3& v, const vec3& n, const float& niOverNt, vec3& refracted)
 {
     vec3 uv = normalize(v);
     float dt = dot(uv, n);

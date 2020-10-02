@@ -7,7 +7,7 @@
 class Ray
 {
 public:
-    Ray(vec3 startpoint, vec3 dir) :
+    Ray(const vec3& startpoint, const vec3& dir) :
         b(startpoint),
         m(dir)
     {
@@ -19,7 +19,7 @@ public:
 
     }
 
-    vec3 PointAt(float t)
+    vec3 PointAt(const float& t) const
     {
         return {b + m * t};
     }

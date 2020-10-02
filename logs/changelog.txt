@@ -1,0 +1,6 @@
+1. Commented out "UpdateIsNormalizedVariable" and "UpdateIsZeroVariable" methods : ~0.25 MRays -> ~0.64 MRays 
+2. (In vec3) Made methods take const and reference parameters : ~0.64 MRays -> ~0.69 MRays 
+3. (In vec3) Changed double to floats : ~0.69 MRays -> ~0.70 MRays 
+4. Made other classes use const and reference parameters : ~0.70 MRays -> ~1.25 MRays 
+5. Pre-calculate ray distribution : ~1.25 MRays -> ~1.36 MRays 
+--

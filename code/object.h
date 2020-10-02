@@ -49,7 +49,7 @@ public:
         delete[] name;
     }
 
-    virtual bool Intersect(HitResult& hit, Ray ray, float maxDist) = 0;
+    virtual bool Intersect(HitResult& hit, const Ray& ray, const float& maxDist) = 0;
     virtual Color GetColor() = 0;
     virtual Ray ScatterRay(Ray ray, vec3 point, vec3 normal) = 0;
 

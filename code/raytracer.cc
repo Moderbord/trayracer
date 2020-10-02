@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 /**
 */
-Raytracer::Raytracer(unsigned w, unsigned h, std::vector<Color>& frameBuffer, unsigned rpp, unsigned bounces) :
+Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<Color>& frameBuffer, const unsigned& rpp, const unsigned& bounces) :
     frameBuffer(frameBuffer),
     rpp(rpp),
     bounces(bounces),
@@ -29,6 +29,14 @@ Raytracer::Raytrace()
     static int leet = 1337;
     std::mt19937 generator (leet++);
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+    std::vector<float> distX, distY;
+
+    // Pre calculate ray distribution
+    for (int i = 0; i < this->rpp; ++i) 
+    {
+        distX.push_back(dis(generator));
+        distY.push_back(dis(generator));
+    }
 
     for (int x = 0; x < this->width; ++x)
     {
@@ -37,8 +45,8 @@ Raytracer::Raytrace()
             Color color;
             for (int i = 0; i < this->rpp; ++i)
             {
-                float u = ((float(x + dis(generator)) * (1.0f / this->width)) * 2.0f) - 1.0f;
-                float v = ((float(y + dis(generator)) * (1.0f / this->height)) * 2.0f) - 1.0f;
+                float u = ((float(x + distX[i]) * (1.0f / this->width)) * 2.0f) - 1.0f;
+                float v = ((float(y + distY[i]) * (1.0f / this->height)) * 2.0f) - 1.0f;
 
                 vec3 direction = vec3(u, v, -1.0f);
                 direction = transform(direction, this->frustum);
@@ -63,7 +71,7 @@ Raytracer::Raytrace()
  * @parameter n - the current bounce level
 */
 Color
-Raytracer::TracePath(Ray ray, unsigned n)
+Raytracer::TracePath(const Ray& ray, const unsigned& n)
 {
     vec3 hitPoint;
     vec3 hitNormal;
@@ -95,7 +103,7 @@ Raytracer::TracePath(Ray ray, unsigned n)
 /**
 */
 bool
-Raytracer::Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance, std::vector<Object*> world)
+Raytracer::Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance, const std::vector<Object*>& world)
 {
     bool isHit = false;
     HitResult closestHit;
@@ -152,7 +160,7 @@ Raytracer::UpdateMatrices()
 /**
 */
 Color
-Raytracer::Skybox(vec3 direction) // wtf?
+Raytracer::Skybox(const vec3& direction) // wtf?
 {
     float t = 0.5*(direction.y + 1.0);
     vec3 vec = vec3(1.0, 1.0, 1.0) * (1.0 - t) + vec3(0.5, 0.7, 1.0) * t; // predefine? neccessary?

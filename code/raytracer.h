@@ -13,7 +13,7 @@
 class Raytracer
 {
 public:
-    Raytracer(unsigned w, unsigned h, std::vector<Color>& frameBuffer, unsigned rpp, unsigned bounces);
+    Raytracer(const unsigned& w, const unsigned& h, std::vector<Color>& frameBuffer, const unsigned& rpp, const unsigned& bounces);
     ~Raytracer() { }
 
     // start raytracing!
@@ -23,10 +23,10 @@ public:
     void AddObject(Object* obj);
 
     // single raycast, find object
-    static bool Raycast(Ray ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance, std::vector<Object*> objects);
+    static bool Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance, const std::vector<Object*>& world);
 
     // set camera matrix
-    void SetViewMatrix(mat4 val);
+    void SetViewMatrix(const mat4& val);
 
     // clear screen
     void Clear();
@@ -36,10 +36,10 @@ public:
 
     // trace a path and return intersection color
     // n is bounce depth
-    Color TracePath(Ray ray, unsigned n);
+    Color TracePath(const Ray& ray, const unsigned& n);
 
     // get the color of the skybox in a direction
-    Color Skybox(vec3 direction);
+    Color Skybox(const vec3& direction);
 
     std::vector<Color>& frameBuffer;
     
@@ -72,7 +72,7 @@ inline void Raytracer::AddObject(Object* o)
     this->objects.push_back(o);
 }
 
-inline void Raytracer::SetViewMatrix(mat4 val)
+inline void Raytracer::SetViewMatrix(const mat4& val)
 {
     this->view = val;
     this->UpdateMatrices();

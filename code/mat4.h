@@ -19,7 +19,7 @@ struct mat4
 /**
 */
 inline vec3
-get_row0(mat4 m)
+get_row0(const mat4& m)
 {
     return {m.m00, m.m01, m.m02};
 }
@@ -28,7 +28,7 @@ get_row0(mat4 m)
 /**
 */
 inline vec3
-get_row1(mat4 m)
+get_row1(const mat4& m)
 {
     return { m.m10, m.m11, m.m12 };
 }
@@ -37,7 +37,7 @@ get_row1(mat4 m)
 /**
 */
 inline vec3
-get_row2(mat4 m)
+get_row2(const mat4& m)
 {
     return { m.m20, m.m21, m.m22 };
 }
@@ -46,7 +46,7 @@ get_row2(mat4 m)
 /**
 */
 inline vec3
-get_position(mat4 m)
+get_position(const mat4& m)
 {
     return { m.m30, m.m31, m.m32 };
 }
@@ -56,7 +56,7 @@ get_position(mat4 m)
     transform vector with matrix basis
 */
 inline vec3
-transform(vec3 v, mat4 m)
+transform(const vec3& v, const mat4& m)
 {
     //swizzle!
     //this should be easy to vectorize! ;)
@@ -81,7 +81,7 @@ transform(vec3 v, mat4 m)
     Create a cartesian space transform from a single normal
 */
 inline mat4
-TBN(vec3 normal)
+TBN(const vec3& normal)
 {
     mat4 ret;
     ret.m10 = normal.x;
@@ -129,7 +129,7 @@ TBN(vec3 normal)
     Calculate determinant
 */
 inline float
-det(mat4 m)
+det(const mat4& m)
 {
     return 
         (m.m00 * m.m11 - m.m01 * m.m10) * (m.m22 * m.m33 - m.m23 * m.m32)
@@ -145,7 +145,7 @@ det(mat4 m)
     Calculate inverse of matrix
 */
 inline mat4
-inverse(mat4 m)
+inverse(const mat4& m)
 {
     float s = det(m);
     
@@ -177,7 +177,7 @@ inverse(mat4 m)
     Flip it!
 */
 inline mat4
-transpose(mat4 m)
+transpose(const mat4& m)
 {
     return {
         m.m00, m.m10, m.m20, m.m30,
@@ -191,7 +191,7 @@ transpose(mat4 m)
 /**
 */
 inline mat4
-multiply(mat4 b, mat4 a)
+multiply(const mat4& b, const mat4& a)
 {
     return { b.m00*a.m00 + b.m10*a.m01 + b.m20*a.m02 + b.m30*a.m03,
              b.m01*a.m00 + b.m11*a.m01 + b.m21*a.m02 + b.m31*a.m03,
@@ -218,7 +218,7 @@ multiply(mat4 b, mat4 a)
 /**
 */
 inline mat4
-rotationx(float angle)
+rotationx(const float& angle)
 {
     float result;
 	float c;
@@ -246,7 +246,7 @@ rotationx(float angle)
 /**
 */
 inline mat4
-rotationy(float angle)
+rotationy(const float& angle)
 {
     float result;
 	float c;

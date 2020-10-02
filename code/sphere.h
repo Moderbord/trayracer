@@ -44,7 +44,7 @@ public:
         return material.color;
     }
 
-    bool Intersect(HitResult& hit, Ray ray, float maxDist) override
+    bool Intersect(HitResult& hit, const Ray& ray, const float& maxDist) override
     {
         vec3 oc = ray.b - this->center;
         vec3 dir = ray.m;
