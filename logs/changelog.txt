@@ -8,3 +8,5 @@
 --
 7. Changed color return type to self refernce from void : ~1.36 MRays -> ~1.41 MRays
 8. Missed setting const reference parameter on Object->ScatterRay : ~1.41 MRays -> ~1.44 MRays
+--
+9. Added const and one reference in Sphere->Intersect. Reused color and Ray vairable in trace loop : ~1.44 MRays -> ~1.48 MRays

@@ -7,6 +7,7 @@
 class Ray
 {
 public:
+    Ray(){};
     Ray(const vec3& startpoint, const vec3& dir) :
         b(startpoint),
         m(dir)

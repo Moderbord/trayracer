@@ -46,39 +46,37 @@ public:
 
     bool Intersect(HitResult& hit, const Ray& ray, const float& maxDist) override
     {
-        vec3 oc = ray.b - this->center;
-        vec3 dir = ray.m;
-        float b = dot(oc, dir);
+        const vec3 oc = ray.b - this->center;
+        const vec3& dir = ray.m;
+        const float b = dot(oc, dir);
     
         // early out if sphere is "behind" ray
         if (b > 0)
             return false;
 
-        float a = dot(dir, dir);
-        float c = dot(oc, oc) - this->radius * this->radius;
-        float discriminant = b * b - a * c;
+        const float a = dot(dir, dir);
+        const float c = dot(oc, oc) - this->radius * this->radius;
+        const float discriminant = b * b - a * c;
 
         if (discriminant > 0)
         {
-            constexpr float minDist = 0.001f;
-            float div = 1.0f / a;
-            float sqrtDisc = sqrt(discriminant);
-            float temp = (-b - sqrtDisc) * div;
-            float temp2 = (-b + sqrtDisc) * div;
+            const float minDist = 0.001f;
+            const float div = 1.0f / a;
+            const float sqrtDisc = sqrt(discriminant);
+            const float temp = (-b - sqrtDisc) * div;
+            const float temp2 = (-b + sqrtDisc) * div;
 
             if (temp < maxDist && temp > minDist)
             {
-                vec3 p = ray.PointAt(temp);
-                hit.p = p;
-                hit.normal = (p - this->center) * (1.0f / this->radius);
+                hit.p = ray.PointAt(temp);
+                hit.normal = (hit.p - this->center) * (1.0f / this->radius);
                 hit.t = temp;
                 return true;
             }
             if (temp2 < maxDist && temp2 > minDist)
             {
-                vec3 p = ray.PointAt(temp2);
-                hit.p = p;
-                hit.normal = (p - this->center) * (1.0f / this->radius);
+                hit.p = ray.PointAt(temp2);
+                hit.normal = (hit.p - this->center) * (1.0f / this->radius);
                 hit.t = temp2;
                 return true;
             }

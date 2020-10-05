@@ -33,6 +33,10 @@ Raytracer::Raytrace()
 
     float fracWidth = 1.0f / this->width;
     float fracHeight = 1.0f / this->height;
+    float sampleFraction = 1.0f / this->rpp;
+
+    Ray ray;
+    vec3 color;
 
     // Pre calculate ray distribution
     for (int i = 0; i < this->rpp; ++i) 
@@ -45,7 +49,7 @@ Raytracer::Raytrace()
     {
         for (int y = 0; y < this->height; ++y)
         {
-            vec3 color;
+            color = {0, 0, 0};
             for (int i = 0; i < this->rpp; ++i)
             {
                 float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
@@ -54,15 +58,14 @@ Raytracer::Raytrace()
                 vec3 direction = vec3(u, v, -1.0f);
                 direction = transform(direction, this->frustum);
                 
-                Ray* ray = new Ray(get_position(this->view), direction);
-                color += this->TracePath(*ray, 0);
-                delete ray;
+                ray = Ray(get_position(this->view), direction);
+                color += this->TracePath(ray, 0);
             }
 
             // divide by number of samples per pixel, to get the average of the distribution
-            color.x /= this->rpp;
-            color.y /= this->rpp;
-            color.z /= this->rpp;
+            color.x *= sampleFraction;
+            color.y *= sampleFraction;
+            color.z *= sampleFraction;
 
             this->frameBuffer[y * this->width + x] += color;
         }
@@ -83,15 +86,11 @@ Raytracer::TracePath(const Ray& ray, const unsigned& n)
 
     if (Raycast(ray, hitPoint, hitNormal, hitObject, distance, this->objects))
     {
-        Ray* scatteredRay = new Ray(hitObject->ScatterRay(ray, hitPoint, hitNormal));
+        Ray scatteredRay = Ray(hitObject->ScatterRay(ray, hitPoint, hitNormal));
         if (n < this->bounces)
         {
-            vec3 col = hitObject->GetColor() * this->TracePath(*scatteredRay, n + 1);
-            delete scatteredRay;
-
-            return col;
+            return hitObject->GetColor() * this->TracePath(scatteredRay, n + 1);
         }
-        delete scatteredRay;
 
         if (n == this->bounces)
         {
