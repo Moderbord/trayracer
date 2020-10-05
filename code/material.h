@@ -22,7 +22,7 @@ struct Material
         just because figuring out a good IOR for ex. plastics is too much work
     */
     TYPE type = Lambertian;
-    Color color = {0.5f,0.5f,0.5f};
+    vec3 color = {0.5f,0.5f,0.5f};
     float roughness = 0.75;
 
     // this is only needed for dielectric materials.

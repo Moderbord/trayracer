@@ -39,7 +39,7 @@ public:
 
     }
 
-    Color GetColor()
+    vec3 GetColor() const override
     {
         return material.color;
     }

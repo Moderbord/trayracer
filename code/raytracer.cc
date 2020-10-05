@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 /**
 */
-Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<Color>& frameBuffer, const unsigned& rpp, const unsigned& bounces) :
+Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces) :
     frameBuffer(frameBuffer),
     rpp(rpp),
     bounces(bounces),
@@ -30,7 +30,7 @@ Raytracer::Raytrace()
     std::mt19937 generator (leet++);
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
     std::vector<float> distX, distY;
-    
+
     float fracWidth = 1.0f / this->width;
     float fracHeight = 1.0f / this->height;
 
@@ -45,7 +45,7 @@ Raytracer::Raytrace()
     {
         for (int y = 0; y < this->height; ++y)
         {
-            Color color;
+            vec3 color;
             for (int i = 0; i < this->rpp; ++i)
             {
                 float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
@@ -60,9 +60,9 @@ Raytracer::Raytrace()
             }
 
             // divide by number of samples per pixel, to get the average of the distribution
-            color.r /= this->rpp;
-            color.g /= this->rpp;
-            color.b /= this->rpp;
+            color.x /= this->rpp;
+            color.y /= this->rpp;
+            color.z /= this->rpp;
 
             this->frameBuffer[y * this->width + x] += color;
         }
@@ -73,7 +73,7 @@ Raytracer::Raytrace()
 /**
  * @parameter n - the current bounce level
 */
-Color
+vec3
 Raytracer::TracePath(const Ray& ray, const unsigned& n)
 {
     vec3 hitPoint;
@@ -86,7 +86,7 @@ Raytracer::TracePath(const Ray& ray, const unsigned& n)
         Ray* scatteredRay = new Ray(hitObject->ScatterRay(ray, hitPoint, hitNormal));
         if (n < this->bounces)
         {
-            Color col = hitObject->GetColor() * this->TracePath(*scatteredRay, n + 1);
+            vec3 col = hitObject->GetColor() * this->TracePath(*scatteredRay, n + 1);
             delete scatteredRay;
 
             return col;
@@ -142,9 +142,9 @@ Raytracer::Clear()
 {
     for (auto& color : this->frameBuffer)
     {
-        color.r = 0.0f;
-        color.g = 0.0f;
-        color.b = 0.0f;
+        color.x = 0.0f;
+        color.y = 0.0f;
+        color.z = 0.0f;
     }
 }
 
@@ -162,10 +162,10 @@ Raytracer::UpdateMatrices()
 //------------------------------------------------------------------------------
 /**
 */
-Color
+vec3
 Raytracer::Skybox(const vec3& direction) // wtf?
 {
     float t = 0.5*(direction.y + 1.0);
     vec3 vec = vec3(1.0, 1.0, 1.0) * (1.0 - t) + vec3(0.5, 0.7, 1.0) * t; // predefine? neccessary?
-    return {(float)vec.x, (float)vec.y, (float)vec.z}; // remove casts
+    return {vec.x, vec.y, vec.z};
 }

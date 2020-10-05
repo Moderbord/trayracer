@@ -2,7 +2,6 @@
 #include <vector>
 #include "vec3.h"
 #include "mat4.h"
-#include "color.h"
 #include "ray.h"
 #include "object.h"
 #include <float.h>
@@ -13,7 +12,7 @@
 class Raytracer
 {
 public:
-    Raytracer(const unsigned& w, const unsigned& h, std::vector<Color>& frameBuffer, const unsigned& rpp, const unsigned& bounces);
+    Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces);
     ~Raytracer() { }
 
     // start raytracing!
@@ -36,12 +35,12 @@ public:
 
     // trace a path and return intersection color
     // n is bounce depth
-    Color TracePath(const Ray& ray, const unsigned& n);
+    vec3 TracePath(const Ray& ray, const unsigned& n);
 
     // get the color of the skybox in a direction
-    Color Skybox(const vec3& direction);
+    vec3 Skybox(const vec3& direction);
 
-    std::vector<Color>& frameBuffer;
+    std::vector<vec3>& frameBuffer;
     
     // rays per pixel
     unsigned rpp;

@@ -17,16 +17,17 @@ public:
     {
     }
 
-    ~vec3()
-    {
-    }
-
     vec3(const vec3& rhs)
     {
         this->x = rhs.x;
         this->y = rhs.y;
         this->z = rhs.z;
     }
+    
+    ~vec3()
+    {
+    }
+    
     vec3& operator=(const vec3& rhs)
     {
         this->x = rhs.x;
@@ -34,37 +35,35 @@ public:
         this->z = rhs.z;
         return *this;
     }
+
+    vec3& operator+=(const vec3& rhs)
+    {
+        this->x += rhs.x;
+        this->y += rhs.y;
+        this->z += rhs.z;
+        return *this;
+    }
+
     vec3 operator+(const vec3& rhs) const { return {x + rhs.x, y + rhs.y, z + rhs.z};}
     vec3 operator-(const vec3& rhs) const { return {x - rhs.x, y - rhs.y, z - rhs.z};}
     vec3 operator-() const { return {-x, -y, -z};}
+    vec3 operator*(const vec3& rhs) const { return {x * rhs.x, y * rhs.y, z * rhs.z};}
     vec3 operator*(const float& c) const { return {x * c, y * c, z * c};}
 
     float x, y, z;
-
-private:
-    bool isNormalized;
-    bool isZero;
 };
 
 // Get length of 3D vector
 inline float len(const vec3& v)
 {
-    float a = v.x * v.x;
-    a = a + v.y * v.y;
-    a = a + v.z * v.z;
-    float l = sqrt(a);
-    return l;
+    return sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
 }
 
 // Get normalized version of v
 inline vec3 normalize(const vec3& v)
 {
-    float l = len(v);
-    if (l < 0)
-        return vec3(0,0,0);
-
-    vec3 ret = vec3(v.x / l, v.y / l, v.z / l);
-    return vec3(ret);
+    float l = 1.0f / len(v);
+    return {v.x * l, v.y * l, v.z * l};
 }
 
 // piecewise multiplication between two vectors
