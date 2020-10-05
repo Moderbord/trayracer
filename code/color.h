@@ -6,11 +6,12 @@ struct Color
     float g = 0;
     float b = 0;
 
-    void operator+=(const Color& rhs)
+    Color& operator+=(const Color& rhs)
     {
         this->r += rhs.r;
         this->g += rhs.g;
         this->b += rhs.b;
+        return *this;
     }
 
     Color operator+(const Color& rhs)

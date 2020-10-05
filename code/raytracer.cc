@@ -30,6 +30,9 @@ Raytracer::Raytrace()
     std::mt19937 generator (leet++);
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
     std::vector<float> distX, distY;
+    
+    float fracWidth = 1.0f / this->width;
+    float fracHeight = 1.0f / this->height;
 
     // Pre calculate ray distribution
     for (int i = 0; i < this->rpp; ++i) 
@@ -45,8 +48,8 @@ Raytracer::Raytrace()
             Color color;
             for (int i = 0; i < this->rpp; ++i)
             {
-                float u = ((float(x + distX[i]) * (1.0f / this->width)) * 2.0f) - 1.0f;
-                float v = ((float(y + distY[i]) * (1.0f / this->height)) * 2.0f) - 1.0f;
+                float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
+                float v = ((float(y + distY[i]) * fracHeight) * 2.0f) - 1.0f;
 
                 vec3 direction = vec3(u, v, -1.0f);
                 direction = transform(direction, this->frustum);

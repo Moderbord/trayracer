@@ -6,3 +6,5 @@
 --
 6. Changed material type into enum : +- 0 MRays
 --
+7. Changed color return type to self refernce from void : ~1.36 MRays -> ~1.41 MRays
+8. Missed setting const reference parameter on Object->ScatterRay : ~1.41 MRays -> ~1.44 MRays
