@@ -46,11 +46,11 @@ BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& no
     else
     {
         vec3 outwardNormal;
-        float niOverNt;
         vec3 refracted;
+        float niOverNt;
         float reflect_prob;
         float cosine;
-        vec3 rayDir = ray.m;
+        const vec3& rayDir = ray.m;
 
         if (cosTheta <= 0)
         {

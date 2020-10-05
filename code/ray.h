@@ -4,9 +4,8 @@
 //------------------------------------------------------------------------------
 /**
 */
-class Ray
+struct Ray
 {
-public:
     Ray(){};
     Ray(const vec3& startpoint, const vec3& dir) :
         b(startpoint),
@@ -14,12 +13,7 @@ public:
     {
 
     }
-
-    ~Ray()
-    {
-
-    }
-
+    
     vec3 PointAt(const float& t) const
     {
         return {b + m * t};

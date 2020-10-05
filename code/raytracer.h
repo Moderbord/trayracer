@@ -18,6 +18,8 @@ public:
     // start raytracing!
     void Raytrace();
 
+    vec3 RaytracePixel(const float& x, const float& y);
+
     // add object to scene
     void AddObject(Object* obj);
 
@@ -64,6 +66,8 @@ public:
 
 private:
     std::vector<Object*> objects;
+    std::vector<float> distX, distY;
+    float fracWidth, fracHeight;
 };
 
 inline void Raytracer::AddObject(Object* o)

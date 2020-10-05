@@ -18,6 +18,19 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
     frustum(identity())
 {
     // empty
+    static int leet = 1337;
+    std::mt19937 generator (leet++);
+    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
+
+    // Pre calculate ray distribution
+    for (int i = 0; i < this->rpp; ++i) 
+    {
+        distX.push_back(dis(generator));
+        distY.push_back(dis(generator));
+    }
+
+    fracWidth = 1.0f / this->width;
+    fracHeight = 1.0f / this->height;
 }
 
 //------------------------------------------------------------------------------
@@ -26,24 +39,12 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
 void
 Raytracer::Raytrace()
 {
-    static int leet = 1337;
-    std::mt19937 generator (leet++);
-    std::uniform_real_distribution<float> dis(0.0f, 1.0f);
-    std::vector<float> distX, distY;
-
     float fracWidth = 1.0f / this->width;
     float fracHeight = 1.0f / this->height;
     float sampleFraction = 1.0f / this->rpp;
 
     Ray ray;
     vec3 color;
-
-    // Pre calculate ray distribution
-    for (int i = 0; i < this->rpp; ++i) 
-    {
-        distX.push_back(dis(generator));
-        distY.push_back(dis(generator));
-    }
 
     for (int x = 0; x < this->width; ++x)
     {
@@ -70,6 +71,24 @@ Raytracer::Raytrace()
             this->frameBuffer[y * this->width + x] += color;
         }
     }
+}
+
+vec3
+Raytracer::RaytracePixel(const float& x, const float& y)
+{
+    vec3 color;
+    for (int i = 0; i < this->rpp; ++i)
+    {
+        float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
+        float v = ((float(y + distY[i]) * fracHeight) * 2.0f) - 1.0f;
+
+        vec3 direction = vec3(u, v, -1.0f);
+        direction = transform(direction, this->frustum);
+        
+        Ray ray = Ray(get_position(this->view), direction);
+        color += this->TracePath(ray, 0);
+    }
+    return color;
 }
 
 //------------------------------------------------------------------------------
