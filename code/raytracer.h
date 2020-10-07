@@ -64,6 +64,8 @@ public:
     // Go from canonical to view frustum
     mat4 frustum;
 
+    size_t numras = 0;
+
 private:
     std::vector<Object*> objects;
     std::vector<float> distX, distY;

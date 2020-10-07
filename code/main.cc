@@ -84,9 +84,10 @@ int render()
     std::chrono::duration<double> duration = t1 - t0;
     // Time
     size_t numRays = width * height * raysPerPixel;
-    double numMRays = (double)numRays / 1000000;
+    double numMRays = (double)rt.numras / 1000000;
     double mRaysSec = numMRays / duration.count();
-    printf("Completed in [%f] seconds, with a total of [%zu] rays, [%f] MRays/s \n", duration.count(), numRays, mRaysSec);
+    
+    printf("Completed in [%f] seconds, with a total of [%zu] rays, [%f] MRays/s \n", duration.count(), rt.numras, mRaysSec);
 
     // Export to file
     if (filepath != nullptr)

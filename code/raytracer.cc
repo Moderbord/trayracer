@@ -46,6 +46,7 @@ Raytracer::Raytrace()
     Ray ray;
     vec3 color;
 
+
     for (int x = 0; x < this->width; ++x)
     {
         for (int y = 0; y < this->height; ++y)
@@ -57,6 +58,7 @@ Raytracer::Raytrace()
                 float v = ((float(y + distY[i]) * fracHeight) * 2.0f) - 1.0f;
 
                 ray = Ray(get_position(this->view), transform({u, v, -1.0f}, this->frustum));
+                numras++;
                 color += this->TracePath(ray, 0);
             }
 
@@ -103,6 +105,7 @@ Raytracer::TracePath(const Ray& ray, const unsigned& n)
     if (Raycast(ray, hitPoint, hitNormal, hitObject, distance, this->objects))
     {
         Ray scatteredRay = Ray(hitObject->ScatterRay(ray, hitPoint, hitNormal));
+        numras++;
         if (n < this->bounces)
         {
             return hitObject->GetColor() * this->TracePath(scatteredRay, n + 1);
