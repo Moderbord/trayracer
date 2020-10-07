@@ -56,10 +56,7 @@ Raytracer::Raytrace()
                 float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
                 float v = ((float(y + distY[i]) * fracHeight) * 2.0f) - 1.0f;
 
-                vec3 direction = vec3(u, v, -1.0f);
-                direction = transform(direction, this->frustum);
-                
-                ray = Ray(get_position(this->view), direction);
+                ray = Ray(get_position(this->view), transform({u, v, -1.0f}, this->frustum));
                 color += this->TracePath(ray, 0);
             }
 
@@ -117,7 +114,7 @@ Raytracer::TracePath(const Ray& ray, const unsigned& n)
         }
     }
 
-    return this->Skybox(ray.m);
+    return this->Skybox(ray.direction);
 }
 
 //------------------------------------------------------------------------------
@@ -128,18 +125,15 @@ Raytracer::Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, Object*& hit
 {
     bool isHit = false;
     HitResult closestHit;
-    int numHits = 0;
     HitResult hit;
 
     for (size_t i = 0; i < world.size(); ++i)
     {
         if (world[i]->Intersect(hit, ray, closestHit.t))
         {
-            assert(hit.t < closestHit.t);
             closestHit = hit;
             closestHit.object = world[i];
             isHit = true;
-            numHits++;
         }
     }
 

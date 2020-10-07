@@ -15,7 +15,7 @@
 Ray
 BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& normal)
 {
-    float cosTheta = -dot(normalize(ray.m), normalize(normal));
+    float cosTheta = -dot(normalize(ray.direction), normalize(normal));
 
     if (material.type != Dielectric)
     {
@@ -34,8 +34,8 @@ BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& no
         {
             mat4 basis = TBN(normal);
             // importance sample with brdf specular lobe
-            vec3 H = ImportanceSampleGGX_VNDF(RandomFloat(), RandomFloat(), material.roughness, ray.m, basis);
-            vec3 reflected = reflect(ray.m, H);
+            vec3 H = ImportanceSampleGGX_VNDF(RandomFloat(), RandomFloat(), material.roughness, ray.direction, basis);
+            vec3 reflected = reflect(ray.direction, H);
             return { point, normalize(reflected) };
         }
         else
@@ -50,7 +50,7 @@ BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& no
         float niOverNt;
         float reflect_prob;
         float cosine;
-        const vec3& rayDir = ray.m;
+        const vec3& rayDir = ray.direction;
 
         if (cosTheta <= 0)
         {

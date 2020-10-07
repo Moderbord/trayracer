@@ -8,19 +8,20 @@ struct Ray
 {
     Ray(){};
     Ray(const vec3& startpoint, const vec3& dir) :
-        b(startpoint),
-        m(dir)
+        origin(startpoint),
+        direction(dir)
     {
 
     }
-    
-    vec3 PointAt(const float& t) const
+
+    vec3 PointAt(const float& step) const
     {
-        return {b + m * t};
+        return {origin + direction * step};
     }
 
     // beginning of ray
-    vec3 b;
+    vec3 origin;
     // magnitude and direction of ray
-    vec3 m;
+    vec3 direction;
+    
 };

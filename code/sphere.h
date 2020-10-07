@@ -26,7 +26,7 @@ public:
     vec3 center;
     Material material;
 
-    Sphere(float radius, vec3 center, Material& material) : 
+    Sphere(const float& radius, const vec3& center, const Material& material) : 
         radius(radius),
         center(center),
         material(material)
@@ -46,8 +46,8 @@ public:
 
     bool Intersect(HitResult& hit, const Ray& ray, const float& maxDist) override
     {
-        const vec3 oc = ray.b - this->center;
-        const vec3& dir = ray.m;
+        const vec3 oc = ray.origin - this->center;
+        const vec3& dir = ray.direction;
         const float b = dot(oc, dir);
     
         // early out if sphere is "behind" ray
