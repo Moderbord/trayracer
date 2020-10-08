@@ -8,14 +8,15 @@
 //------------------------------------------------------------------------------
 /**
 */
-Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces) :
+Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces, const DataManager& dm) :
     frameBuffer(frameBuffer),
     rpp(rpp),
     bounces(bounces),
     width(w),
     height(h),
     view(identity()),
-    frustum(identity())
+    frustum(identity()),
+    dm(dm)
 {
     // empty
     static int leet = 1337;
@@ -99,16 +100,16 @@ Raytracer::TracePath(const Ray& ray, const unsigned& n)
 {
     vec3 hitPoint;
     vec3 hitNormal;
-    Object* hitObject = nullptr;
+    // Object* hitObject = nullptr;
     float distance = FLT_MAX;
 
-    if (Raycast(ray, hitPoint, hitNormal, hitObject, distance, this->objects))
+    if (Raycast(ray, hitPoint, hitNormal, distance))
     {
-        Ray scatteredRay = Ray(hitObject->ScatterRay(ray, hitPoint, hitNormal));
+        Ray scatteredRay = Ray(ScatterRay(ray, hitPoint, hitNormal));
         numras++;
         if (n < this->bounces)
         {
-            return hitObject->GetColor() * this->TracePath(scatteredRay, n + 1);
+            //return dm.getColor(0) * this->TracePath(scatteredRay, n + 1);
         }
 
         if (n == this->bounces)
@@ -124,25 +125,26 @@ Raytracer::TracePath(const Ray& ray, const unsigned& n)
 /**
 */
 bool
-Raytracer::Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance, const std::vector<Object*>& world)
+Raytracer::Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& distance)
 {
     bool isHit = false;
     HitResult closestHit;
     HitResult hit;
 
-    for (size_t i = 0; i < world.size(); ++i)
-    {
-        if (world[i]->Intersect(hit, ray, closestHit.t))
-        {
-            closestHit = hit;
-            closestHit.object = world[i];
-            isHit = true;
-        }
-    }
+    
+    // for (size_t i = 0; i < dm.; ++i)
+    // {
+    //     if (Intersect(hit, ray, closestHit.t))
+    //     {
+    //         closestHit = hit;
+    //         //closestHit.object = world[i];
+    //         isHit = true;
+    //     }
+    // }
 
     hitPoint = closestHit.p;
     hitNormal = closestHit.normal;
-    hitObject = closestHit.object;
+    //hitObject = closestHit.object;
     distance = closestHit.t;
     
     return isHit;
@@ -183,4 +185,10 @@ Raytracer::Skybox(const vec3& direction) // wtf?
     float t = 0.5*(direction.y + 1.0);
     vec3 vec = vec3(1.0, 1.0, 1.0) * (1.0 - t) + vec3(0.5, 0.7, 1.0) * t; // predefine? neccessary?
     return {vec.x, vec.y, vec.z};
+}
+
+
+Ray Raytracer::ScatterRay(const Ray& ray, const vec3& point, const vec3& normal) 
+{
+    return BSDF(dm._materials.at(0), ray, point, normal);
 }

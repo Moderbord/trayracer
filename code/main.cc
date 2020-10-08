@@ -9,6 +9,7 @@
 #include "raytracer.h"
 #include "sphere.h"
 #include "getopt.h"
+#include "material.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
@@ -24,48 +25,79 @@ char* filepath;
 
 int render()
 {
+    Material mats[6] = 
+    {
+        {{Lambertian},{0.5f,0.5f,0.5f},{0.3f},{1.44f}},
+        {{Conductor},{1.0f,1.0f,1.0f},{0.3f},{1.44f}},
+        {{Lambertian},{0.0f,0.4f,0.6f},{0.2f},{1.44f}},
+        {{Dielectric},{1.0f,0.8f,0.7f},{1.65f},{1.44f}},
+        {{Lambertian},{1.0f,0.0f,0.2f},{0.04f},{1.44f}},
+        {{Lambertian},{1.0f,1.0f,1.0f},{0.0f},{1.44f}}
+    };
+
+    Transform trans[6] =
+    {
+        {{0.0f,-1000.0f,-1.0f}, 1000},
+        {{0.0f,1.0f,0.0f}, 1},
+        {{-4.0f,1.0f,0.0f}, 1},
+        {{-4.0f,1.0f,2.0f}, 1},
+        {{1.0f,1.0f,-3.0f}, 1},
+        {{4.0f,1.0f,0.0f}, 1},
+    };
+
+    // Sphere s0, s1, s2, s3, s4, s5;
+    // Object objs[6] = {s0, s1, s2, s3, s4, s5};
+
+    DataManager storage;
+    Buffer materials, objects, transforms;
+
+    storage.genMaterialBuffer(materials, 6, mats);
+    //storage.genObjectBuffer(objects);
+    storage.genTransformBuffer(transforms, 6, trans);
+
+
     std::vector<vec3> framebuffer;
     framebuffer.resize(width * height);
-    Raytracer rt = Raytracer(width, height, framebuffer, raysPerPixel, maxBounces);
+    Raytracer rt = Raytracer(width, height, framebuffer, raysPerPixel, maxBounces, storage);
 
-    // Create some objects
-    Material mat;
-    mat.type = Lambertian;
-    mat.color = { 0.5,0.5,0.5 };
-    mat.roughness = 0.3;
-    Sphere* ground = new Sphere(1000, { 0,-1000, -1 }, mat);
-    rt.AddObject(ground);
+    // // Create some objects
+    // Material mat;
+    // mat.type = Lambertian;
+    // mat.color = { 0.5,0.5,0.5 };
+    // mat.roughness = 0.3;
+    // Sphere* ground = new Sphere(1000, { 0,-1000, -1 }, mat);
+    // rt.AddObject(ground);
     
-    mat.type = Conductor;
-    mat.color = {1,1,1};
-    mat.roughness = 0.2f;
-    Sphere* test1 = new Sphere(1, { 0,1,0 }, mat);
-    rt.AddObject(test1);
+    // mat.type = Conductor;
+    // mat.color = {1,1,1};
+    // mat.roughness = 0.2f;
+    // Sphere* test1 = new Sphere(1, { 0,1,0 }, mat);
+    // rt.AddObject(test1);
 
-    mat.type = Lambertian;
-    mat.color = { 0,0.4,0.6 };
-    mat.roughness = 0.2;
-    Sphere* test2 = new Sphere(1, { -4,1,0 }, mat);
-    rt.AddObject(test2);
+    // mat.type = Lambertian;
+    // mat.color = { 0,0.4,0.6 };
+    // mat.roughness = 0.2;
+    // Sphere* test2 = new Sphere(1, { -4,1,0 }, mat);
+    // rt.AddObject(test2);
 
-    mat.type = Dielectric;
-    mat.color = { 1,0.8,0.7 };
-    mat.roughness = 0.95;
-    mat.refractionIndex = 1.65;
-    Sphere* test3 = new Sphere(1, { -4,1, 2 }, mat);
-    rt.AddObject(test3);
+    // mat.type = Dielectric;
+    // mat.color = { 1,0.8,0.7 };
+    // mat.roughness = 0.95;
+    // mat.refractionIndex = 1.65;
+    // Sphere* test3 = new Sphere(1, { -4,1, 2 }, mat);
+    // rt.AddObject(test3);
 
-    mat.type = Lambertian;
-    mat.color = { 1,0,0.2 };
-    mat.roughness = 0.04;
-    Sphere* test4 = new Sphere(1, { 1,1, -3 }, mat);
-    rt.AddObject(test4);
+    // mat.type = Lambertian;
+    // mat.color = { 1,0,0.2 };
+    // mat.roughness = 0.04;
+    // Sphere* test4 = new Sphere(1, { 1,1, -3 }, mat);
+    // rt.AddObject(test4);
 
-    mat.type = Lambertian;
-    mat.color = { 1,1,1 };
-    mat.roughness = 0.0;
-    Sphere* test5 = new Sphere(1, { 4,1, 0 }, mat);
-    rt.AddObject(test5);
+    // mat.type = Lambertian;
+    // mat.color = { 1,1,1 };
+    // mat.roughness = 0.0;
+    // Sphere* test5 = new Sphere(1, { 4,1, 0 }, mat);
+    // rt.AddObject(test5);
 
     mat4 view { 1,  0,  0,  0,
                 0,  1,  0,  0,
@@ -123,12 +155,12 @@ int render()
         printf("Max bounces per ray: %u\n", maxBounces);
     }
 
-    delete ground;
-    delete test1;
-    delete test2;
-    delete test3;
-    delete test4;
-    delete test5;
+    // delete ground;
+    // delete test1;
+    // delete test2;
+    // delete test3;
+    // delete test4;
+    // delete test5;
 
     return 0;
 }
