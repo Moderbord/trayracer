@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 /**
 */
-Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces, const BufferManager& dm) :
+Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces, const BufferManager& bm) :
     frameBuffer(frameBuffer),
     rpp(rpp),
     bounces(bounces),
@@ -16,7 +16,7 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
     height(h),
     view(identity()),
     frustum(identity()),
-    bm(dm)
+    bm(bm)
 {
     // empty
     static int leet = 1337;
@@ -131,7 +131,7 @@ Raytracer::Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& dista
     HitResult closestHit;
     HitResult hit;
     
-    for (int i = 0; i < bm._objects->n; i ++)
+    for (int i = 0; i < bm._objects->n; i++)
     {
         Object& obj = *(bm._objects->data + i);
         if (IntersectSphere(hit, ray, closestHit.t, bm.getTransform(obj)))
@@ -180,13 +180,12 @@ Raytracer::UpdateMatrices()
 /**
 */
 vec3
-Raytracer::Skybox(const vec3& direction) // wtf?
+Raytracer::Skybox(const vec3& direction)
 {
-    float t = 0.5*(direction.y + 1.0);
-    vec3 vec = vec3(1.0, 1.0, 1.0) * (1.0 - t) + vec3(0.5, 0.7, 1.0) * t; // predefine? neccessary?
-    return {vec.x, vec.y, vec.z};
+    float t = 0.5f*(direction.y + 1.0f);
+    float u = 1.0f - t;
+    return {0.5f * t + u, 0.7f * t + u, 1.0f * t + u};
 }
-
 
 Ray Raytracer::ScatterRay(const Ray& ray, const vec3& point, const vec3& normal, const Object& object) 
 {

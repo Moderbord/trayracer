@@ -12,7 +12,7 @@
 class Raytracer
 {
 public:
-    Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces, const BufferManager& dm);
+    Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces, const BufferManager& bm);
     ~Raytracer() { }
 
     // start raytracing!

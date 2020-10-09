@@ -73,9 +73,5 @@ inline bool IntersectSphere(HitResult& hit, const Ray& ray, const float& maxDist
 // returns a random point on the surface of a unit sphere
 inline vec3 random_point_on_unit_sphere()
 {
-    float x = RandomFloatNTP();
-    float y = RandomFloatNTP();
-    float z = RandomFloatNTP();
-    vec3 v( x, y, z );
-    return normalize(v);
+    return normalize({RandomFloatNTP(), RandomFloatNTP(), RandomFloatNTP()});
 }

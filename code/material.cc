@@ -15,6 +15,7 @@ Ray
 BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& normal)
 {
     float cosTheta = -dot(normalize(ray.direction), normalize(normal));
+    float r = RandomFloat();
 
     if (material.type != Dielectric)
     {
@@ -27,15 +28,12 @@ BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& no
         // probability that a ray will reflect on a microfacet
         float F = FresnelSchlick(cosTheta, F0, material.roughness);
 
-        float r = RandomFloat();
-
         if (r < F)
         {
             mat4 basis = TBN(normal);
             // importance sample with brdf specular lobe
             vec3 H = ImportanceSampleGGX_VNDF(RandomFloat(), RandomFloat(), material.roughness, ray.direction, basis);
-            vec3 reflected = reflect(ray.direction, H);
-            return { point, normalize(reflected) };
+            return { point, normalize({reflect(ray.direction, H)}) };
         }
         else
         {
@@ -47,7 +45,7 @@ BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& no
         vec3 outwardNormal;
         vec3 refracted;
         float niOverNt;
-        float reflect_prob;
+        float reflect_prob = 1.0f;
         float cosine;
         const vec3& rayDir = ray.direction;
 
@@ -70,14 +68,10 @@ BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& no
             float F0 = powf(material.refractionIndex - 1, 2) / powf(material.refractionIndex + 1, 2);
             reflect_prob = FresnelSchlick(cosine, F0, material.roughness);
         }
-        else
+
+        if (r < reflect_prob)
         {
-            reflect_prob = 1.0;
-        }
-        if (RandomFloat() < reflect_prob)
-        {
-            vec3 reflected = reflect(rayDir, normal);
-            return { point, reflected };
+            return { point, {reflect(rayDir, normal)} };
         }
         else
         {
