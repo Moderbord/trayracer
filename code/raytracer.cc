@@ -16,7 +16,7 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
     height(h),
     view(identity()),
     frustum(identity()),
-    dm(dm)
+    bm(dm)
 {
     // empty
     static int leet = 1337;
@@ -109,7 +109,7 @@ Raytracer::TracePath(const Ray& ray, const unsigned& n)
         numras++;
         if (n < this->bounces)
         {
-            return dm.getColor(hitObject) * this->TracePath(scatteredRay, n + 1);
+            return bm.getColor(hitObject) * this->TracePath(scatteredRay, n + 1);
         }
 
         if (n == this->bounces)
@@ -131,10 +131,10 @@ Raytracer::Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& dista
     HitResult closestHit;
     HitResult hit;
     
-    for (int i = 0; i < dm._objects->n; i ++)
+    for (int i = 0; i < bm._objects->n; i ++)
     {
-        Object& obj = *(dm._objects->data + i);
-        if (IntersectSphere(hit, ray, closestHit.t, dm.getTransform(obj)))
+        Object& obj = *(bm._objects->data + i);
+        if (IntersectSphere(hit, ray, closestHit.t, bm.getTransform(obj)))
         {
             closestHit = hit;
             closestHit.object = obj;
@@ -190,5 +190,5 @@ Raytracer::Skybox(const vec3& direction) // wtf?
 
 Ray Raytracer::ScatterRay(const Ray& ray, const vec3& point, const vec3& normal, const Object& object) 
 {
-    return BSDF(dm.getMaterial(object), ray, point, normal);
+    return BSDF(bm.getMaterial(object), ray, point, normal);
 }

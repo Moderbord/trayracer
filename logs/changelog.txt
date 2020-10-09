@@ -10,3 +10,7 @@
 8. Missed setting const reference parameter on Object->ScatterRay : ~1.41 MRays -> ~1.44 MRays
 --
 9. Added const and one reference in Sphere->Intersect. Reused color and Ray vairable in trace loop : ~1.44 MRays -> ~1.48 MRays
+--
+
+--
+x. Data oriented storage -> ~2.50 MRays

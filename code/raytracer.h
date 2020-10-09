@@ -20,11 +20,7 @@ public:
 
     vec3 RaytracePixel(const float& x, const float& y);
 
-    // add object to scene
-    // void AddObject(Object* obj);
-
     // single raycast, find object
-    // static bool Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance, const std::vector<Object*>& world);
     bool Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& distance, Object& hitObject);
 
     // set camera matrix
@@ -68,18 +64,12 @@ public:
     mat4 frustum;
 
     size_t numras = 0;
-    BufferManager dm;
+    BufferManager bm;
 
 private:
-    //std::vector<Object*> objects;
     std::vector<float> distX, distY;
     float fracWidth, fracHeight;
 };
-
-// inline void Raytracer::AddObject(Object* o)
-// {
-//     this->objects.push_back(o);
-// }
 
 inline void Raytracer::SetViewMatrix(const mat4& val)
 {

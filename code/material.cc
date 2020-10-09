@@ -4,9 +4,8 @@
 */
 #include "material.h"
 #include "pbr.h"
-#include <time.h>
 #include "mat4.h"
-#include "sphere.h"
+#include "object.h"
 #include "random.h"
 
 //------------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 #pragma once
+#include "object.h"
+#include "material.h"
 #include <vector>
 #include <map>
 #include <string.h>
-#include "object.h"
-#include "material.h"
 
 typedef uint8_t BufferID;
 
