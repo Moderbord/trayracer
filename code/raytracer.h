@@ -2,9 +2,7 @@
 #include "vec3.h"
 #include "mat4.h"
 #include "ray.h"
-#include "object.h"
-#include "material.h"
-#include "datamanager.h"
+#include "buffermanager.h"
 #include <vector>
 #include <float.h>
 
@@ -14,7 +12,7 @@
 class Raytracer
 {
 public:
-    Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces, const DataManager& dm);
+    Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces, const BufferManager& dm);
     ~Raytracer() { }
 
     // start raytracing!
@@ -27,7 +25,7 @@ public:
 
     // single raycast, find object
     // static bool Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, Object*& hitObject, float& distance, const std::vector<Object*>& world);
-    static bool Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& distance);
+    bool Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& distance, Object& hitObject);
 
     // set camera matrix
     void SetViewMatrix(const mat4& val);
@@ -45,7 +43,7 @@ public:
     // get the color of the skybox in a direction
     vec3 Skybox(const vec3& direction);
 
-    Ray ScatterRay(const Ray& ray, const vec3& point, const vec3& normal);
+    Ray ScatterRay(const Ray& ray, const vec3& point, const vec3& normal, const Object& object);
 
     std::vector<vec3>& frameBuffer;
     
@@ -70,7 +68,7 @@ public:
     mat4 frustum;
 
     size_t numras = 0;
-    DataManager dm;
+    BufferManager dm;
 
 private:
     //std::vector<Object*> objects;

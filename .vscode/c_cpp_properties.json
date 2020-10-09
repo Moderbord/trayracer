@@ -6,8 +6,8 @@
     },
     "configurations": [
         {
-            "name": "Mac",
-            "intelliSenseMode": "clang-x64",
+            "name": "linux",
+            "intelliSenseMode": "gcc-x64",
             "includePath": [
                 "${defaultIncludePath}",
                 "${workspaceFolder}/exts/glew/include",
