@@ -34,7 +34,7 @@ public:
 
     // trace a path and return intersection color
     // n is bounce depth
-    vec3 TracePath(const Ray& ray, const unsigned& n);
+    vec3 TracePath(Ray& ray, unsigned n);
 
     // get the color of the skybox in a direction
     vec3 Skybox(const vec3& direction);

@@ -52,7 +52,7 @@ Raytracer::Raytrace()
     {
         for (int y = 0; y < this->height; ++y)
         {
-            color = {0, 0, 0};
+            color = {0.0f, 0.0f, 0.0f};
             for (int i = 0; i < this->rpp; ++i)
             {
                 float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
@@ -60,13 +60,11 @@ Raytracer::Raytrace()
 
                 ray = Ray(get_position(this->view), transform({u, v, -1.0f}, this->frustum));
                 numras++;
-                color += this->TracePath(ray, 0);
+                color += this->TracePath(ray, this->bounces);
             }
 
             // divide by number of samples per pixel, to get the average of the distribution
-            color.x *= sampleFraction;
-            color.y *= sampleFraction;
-            color.z *= sampleFraction;
+            color *= sampleFraction;
 
             this->frameBuffer[y * this->width + x] += color;
         }
@@ -96,29 +94,32 @@ Raytracer::RaytracePixel(const float& x, const float& y)
  * @parameter n - the current bounce level
 */
 vec3
-Raytracer::TracePath(const Ray& ray, const unsigned& n)
+Raytracer::TracePath(Ray& ray, unsigned n)
 {
     vec3 hitPoint;
     vec3 hitNormal;
     Object hitObject;
     float distance = FLT_MAX;
 
-    if (Raycast(ray, hitPoint, hitNormal, distance, hitObject))
+    vec3 color {1.0f, 1.0f, 1.0f};
+    Material* material;
+
+    while (n > 0) // count down
     {
-        Ray scatteredRay = Ray(ScatterRay(ray, hitPoint, hitNormal, hitObject));
-        numras++;
-        if (n < this->bounces)
+        if (Raycast(ray, hitPoint, hitNormal, distance, hitObject))
         {
-            return bm.getColor(hitObject) * this->TracePath(scatteredRay, n + 1);
-        }
+            material = bm._materials->data + hitObject.id;
+            color *= material->color;
 
-        if (n == this->bounces)
-        {
-            return {0,0,0};
+            ray = BSDF(*material, ray, hitPoint, hitNormal);
+            numras++;
+            
+            n--;
+            continue;
         }
+        return color *= this->Skybox(ray.direction);
     }
-
-    return this->Skybox(ray.direction);
+    return color *= {0.0f, 0.0f, 0.0f};
 }
 
 //------------------------------------------------------------------------------
@@ -130,14 +131,19 @@ Raytracer::Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& dista
     bool isHit = false;
     HitResult closestHit;
     HitResult hit;
-    
+
+    Object* obj;
+    Transform* trans;
+
     for (int i = 0; i < bm._objects->n; i++)
     {
-        Object& obj = *(bm._objects->data + i);
-        if (IntersectSphere(hit, ray, closestHit.t, bm.getTransform(obj)))
+        obj = (bm._objects->data + i);
+        trans = (bm._transforms->data + i);
+
+        if (IntersectSphere(hit, ray, closestHit.t, *trans))
         {
             closestHit = hit;
-            closestHit.object = obj;
+            closestHit.object = *obj;
             isHit = true;
         }
     }

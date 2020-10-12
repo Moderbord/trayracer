@@ -44,6 +44,22 @@ public:
         return *this;
     }
 
+    vec3& operator*=(const vec3& rhs)
+    {
+        this->x *= rhs.x;
+        this->y *= rhs.y;
+        this->z *= rhs.z;
+        return *this;
+    }
+
+    vec3& operator*=(const float& f)
+    {
+        this->x *= f;
+        this->y *= f;
+        this->z *= f;
+        return *this;
+    }
+
     vec3 operator+(const vec3& rhs) const { return {x + rhs.x, y + rhs.y, z + rhs.z};}
     vec3 operator-(const vec3& rhs) const { return {x - rhs.x, y - rhs.y, z - rhs.z};}
     vec3 operator-() const { return {-x, -y, -z};}

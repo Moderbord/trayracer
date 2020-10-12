@@ -14,7 +14,9 @@
 10. Counted rays properly : -> ~2.52 MRays
 11. Improved Skybox function : -> ~2.63 MRays
 --
-12. Data oriented storage -> ~2.62 MRays
+12. Data oriented storage : -> ~2.62 MRays
 --
-13. Improved Transform function -> ~2.93 MRays
-14. Reduced vec3 creation and slightly improved flow in material -> ~2.93
+13. Improved Transform function : -> ~2.93 MRays
+14. Reduced vec3 creation and slightly improved flow in material : -> ~2.93
+--
+15. Added pointers to Objects and their Transform in raycast loop : -> ~3.10
