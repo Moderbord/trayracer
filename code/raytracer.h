@@ -19,6 +19,7 @@ public:
     void Raytrace();
 
     vec3 RaytracePixel(const float& x, const float& y);
+    void* thread_task(void *arg);
 
     // single raycast, find object
     bool Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& distance, Object& hitObject);
@@ -39,7 +40,7 @@ public:
     // get the color of the skybox in a direction
     vec3 Skybox(const vec3& direction);
 
-    Ray ScatterRay(const Ray& ray, const vec3& point, const vec3& normal, const Object& object);
+    //void ScatterRay(const Ray& ray, const vec3& point, const vec3& normal, const Object& object);
 
     std::vector<vec3>& frameBuffer;
     

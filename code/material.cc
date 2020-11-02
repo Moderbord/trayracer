@@ -11,8 +11,8 @@
 //------------------------------------------------------------------------------
 /**
 */
-Ray
-BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& normal)
+void
+BSDF(const Material& material, Ray& ray, const vec3& normal)
 {
     float cosTheta = -dot(normalize(ray.direction), normalize(normal));
     float r = RandomFloat();
@@ -33,11 +33,11 @@ BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& no
             mat4 basis = TBN(normal);
             // importance sample with brdf specular lobe
             vec3 H = ImportanceSampleGGX_VNDF(RandomFloat(), RandomFloat(), material.roughness, ray.direction, basis);
-            return { point, normalize({reflect(ray.direction, H)}) };
+            ray.direction = normalize({reflect(ray.direction, H)});
         }
         else
         {
-            return { point, normalize(normalize(normal) + random_point_on_unit_sphere()) };
+            ray.direction = normalize(normalize(normal) + random_point_on_unit_sphere());
         }
     }
     else
@@ -71,11 +71,11 @@ BSDF(const Material& material, const Ray& ray, const vec3& point, const vec3& no
 
         if (r < reflect_prob)
         {
-            return { point, {reflect(rayDir, normal)} };
+            ray.direction = reflect(rayDir, normal);
         }
         else
         {
-            return { point, refracted };
+            ray.direction = refracted;
         }
     }
 }

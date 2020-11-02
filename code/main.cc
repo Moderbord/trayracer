@@ -23,7 +23,7 @@ char* filepath;
 
 int render()
 {
-    // -------------------------- 
+    // -------------------------- Mimics file
     Material mats[6] = 
     {
         {{Lambertian},{0.5f,0.5f,0.5f},{0.3f},{1.44f}},

@@ -17,6 +17,8 @@
 12. Data oriented storage : -> ~2.62 MRays
 --
 13. Improved Transform function : -> ~2.93 MRays
-14. Reduced vec3 creation and slightly improved flow in material : -> ~2.93
+14. Reduced vec3 creation and slightly improved flow in material : -> ~2.93 MRays
 --
-15. Added pointers to Objects and their Transform in raycast loop : -> ~3.10
+15. Added pointers to Objects and their Transform in raycast loop : -> ~3.10 MRays
+--
+16. BSDF assignes ray direction instead of returning new ray : -> ~3.28 MRays

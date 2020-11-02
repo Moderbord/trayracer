@@ -2,7 +2,9 @@
 * This is a personal academic project. Dear PVS-Studio, please check it.
 * PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 */
+//Dutt
 #include "raytracer.h"
+#include <pthread.h>
 #include <random>
 
 //------------------------------------------------------------------------------
@@ -18,7 +20,7 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
     frustum(identity()),
     bm(bm)
 {
-    // empty
+    // empty Dutt
     static int leet = 1337;
     std::mt19937 generator (leet++);
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
@@ -44,31 +46,46 @@ Raytracer::Raytrace()
     float fracHeight = 1.0f / this->height;
     float sampleFraction = 1.0f / this->rpp;
 
+    unsigned num_threads = 4;
+    unsigned active_threads = 0;
+
     Ray ray;
     vec3 color;
 
 
-    for (int x = 0; x < this->width; ++x)
-    {
-        for (int y = 0; y < this->height; ++y)
-        {
-            color = {0.0f, 0.0f, 0.0f};
-            for (int i = 0; i < this->rpp; ++i)
-            {
-                float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
-                float v = ((float(y + distY[i]) * fracHeight) * 2.0f) - 1.0f;
 
-                ray = Ray(get_position(this->view), transform({u, v, -1.0f}, this->frustum));
-                numras++;
-                color += this->TracePath(ray, this->bounces);
-            }
+    // for (int x = 0; x < this->width; ++x)
+    // {
+    //     for (int y = 0; y < this->height; ++y)
+    //     {
+    //         color = {0.0f, 0.0f, 0.0f};
+    //         for (int i = 0; i < this->rpp; ++i)
+    //         {
+    //             float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
+    //             float v = ((float(y + distY[i]) * fracHeight) * 2.0f) - 1.0f;
 
-            // divide by number of samples per pixel, to get the average of the distribution
-            color *= sampleFraction;
+    //             ray.origin = get_position(this->view);
+    //             ray.direction = transform({u, v, -1.0f}, this->frustum);
+    //             numras++;
+    //             color += this->TracePath(ray, this->bounces);
+    //         }
 
-            this->frameBuffer[y * this->width + x] += color;
-        }
-    }
+    //         // divide by number of samples per pixel, to get the average of the distribution
+    //         color *= sampleFraction;
+
+    //         this->frameBuffer[y * this->width + x] += color;
+    //     }
+    // }
+}
+
+void* Raytracer::thread_task(void *arg)
+{
+    unsigned int *y = (unsigned int *)arg;
+    //long double *val = (long double *)arg;
+    //*val = owosqrt();
+    //printf("Thread ID: %lu\towo: %Lf\n", pthread_self(), owosqrt());
+    //Dutt
+    pthread_exit(EXIT_SUCCESS);
 }
 
 vec3
@@ -111,15 +128,16 @@ Raytracer::TracePath(Ray& ray, unsigned n)
             material = bm._materials->data + hitObject.id;
             color *= material->color;
 
-            ray = BSDF(*material, ray, hitPoint, hitNormal);
+            ray.origin = hitPoint;
+            BSDF(*material, ray, hitNormal);
             numras++;
             
             n--;
-            continue;
+            continue; // Ray bounce
         }
-        return color *= this->Skybox(ray.direction);
+        return color *= this->Skybox(ray.direction); // Ray hits skybox
     }
-    return color *= {0.0f, 0.0f, 0.0f};
+    return color *= {0.0f, 0.0f, 0.0f}; // Ray hits maximum bounces
 }
 
 //------------------------------------------------------------------------------
@@ -137,7 +155,7 @@ Raytracer::Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& dista
 
     for (int i = 0; i < bm._objects->n; i++)
     {
-        obj = (bm._objects->data + i);
+        obj = (bm._objects->data + i); // only works cause objects are in order
         trans = (bm._transforms->data + i);
 
         if (IntersectSphere(hit, ray, closestHit.t, *trans))
@@ -193,7 +211,7 @@ Raytracer::Skybox(const vec3& direction)
     return {0.5f * t + u, 0.7f * t + u, 1.0f * t + u};
 }
 
-Ray Raytracer::ScatterRay(const Ray& ray, const vec3& point, const vec3& normal, const Object& object) 
-{
-    return BSDF(bm.getMaterial(object), ray, point, normal);
-}
+// void Raytracer::ScatterRay(const Ray& ray, const vec3& point, const vec3& normal, const Object& object) 
+// {
+//     BSDF(bm.getMaterial(object), ray, point, normal);
+// }
