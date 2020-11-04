@@ -1,7 +1,5 @@
 #pragma once
 #include <cmath>
-#include <initializer_list>
-#include <assert.h>
 #include <float.h>
 
 #define MPI 3.14159265358979323846

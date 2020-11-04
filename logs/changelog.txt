@@ -22,3 +22,6 @@
 15. Added pointers to Objects and their Transform in raycast loop : -> ~3.10 MRays
 --
 16. BSDF assignes ray direction instead of returning new ray : -> ~3.28 MRays
+--
+17. Added quick implementation of multithreading with 8 threads : -> ~12.5 MRays
+18. Improved multithreading implementation : -> ~31.2 MRays

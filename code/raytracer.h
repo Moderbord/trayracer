@@ -13,13 +13,13 @@ class Raytracer
 {
 public:
     Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces, const BufferManager& bm);
-    ~Raytracer() { }
+    ~Raytracer()
+    { 
+         free(rayBuffer);
+    }
 
     // start raytracing!
     void Raytrace();
-
-    vec3 RaytracePixel(const float& x, const float& y);
-    void* thread_task(void *arg);
 
     // single raycast, find object
     bool Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& distance, Object& hitObject);
@@ -54,22 +54,23 @@ public:
     // height of framebuffer
     const unsigned height;
     
-    const vec3 lowerLeftCorner = { -2.0, -1.0, -1.0 };
-    const vec3 horizontal = { 4.0, 0.0, 0.0 };
-    const vec3 vertical = { 0.0, 2.0, 0.0 };
-    const vec3 origin = { 0.0, 2.0, 10.0f };
+    const vec3 lowerLeftCorner = { -2.0f, -1.0f, -1.0f };
+    const vec3 horizontal = { 4.0f, 0.0f, 0.0f };
+    const vec3 vertical = { 0.0f, 2.0f, 0.0f };
+    const vec3 origin = { 0.0f, 2.0f, 10.0f };
 
     // view matrix
     mat4 view;
     // Go from canonical to view frustum
     mat4 frustum;
 
-    size_t numras = 0;
+    size_t num_rays;
     BufferManager bm;
+    Ray* rayBuffer;
 
-private:
     std::vector<float> distX, distY;
     float fracWidth, fracHeight;
+    float sampleFraction;
 };
 
 inline void Raytracer::SetViewMatrix(const mat4& val)

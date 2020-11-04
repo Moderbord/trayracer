@@ -76,11 +76,10 @@ int render()
     std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = t1 - t0;
     // Time
-    size_t numRays = width * height * raysPerPixel;
-    double numMRays = (double)rt.numras / 1000000;
+    double numMRays = (double)rt.num_rays / 1000000;
     double mRaysSec = numMRays / duration.count();
     
-    printf("Completed in [%f] seconds, with a total of [%zu] rays, [%f] MRays/s \n", duration.count(), rt.numras, mRaysSec);
+    printf("Completed in [%f] seconds, with a total of [%zu] rays, [%f] MRays/s \n", duration.count(), rt.num_rays, mRaysSec);
 
     // Export to file
     if (filepath != nullptr)

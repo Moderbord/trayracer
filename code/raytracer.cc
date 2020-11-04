@@ -25,8 +25,17 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
     std::mt19937 generator (leet++);
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
 
+    // Allocate size for ray buffer
+    num_rays = w * h * rpp;
+    // size_t size = (sizeof(Ray) * num_rays);
+    // rayBuffer = (Ray*) malloc(size);
+    // if (rayBuffer == NULL) 
+    // {
+    //     fprintf(stderr, "Failed to allocate Ray buffer!");
+    // }
+
     // Pre calculate ray distribution
-    for (int i = 0; i < this->rpp; ++i) 
+    for (int i = 0; i < this->rpp; i++) 
     {
         distX.push_back(dis(generator));
         distY.push_back(dis(generator));
@@ -34,7 +43,58 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
 
     fracWidth = 1.0f / this->width;
     fracHeight = 1.0f / this->height;
+    sampleFraction = 1.0f / this->rpp;
 }
+
+struct thread_info
+{
+    unsigned start;
+    unsigned end;
+    Raytracer* context;
+};
+
+void* th_raytrace(void *arg)
+{
+    thread_info *thread = (thread_info *)arg;
+    Raytracer* context = thread->context;
+
+    const mat4& mat_view = context->view;
+    const mat4& mat_frustrum = context->frustum;
+
+    const unsigned& row_width = context->width;
+    const unsigned& rpp = context->rpp;
+    const unsigned& ray_bounces = context->bounces;
+    const unsigned& width = context->width;
+    const float& fraction_width = context->fracWidth;
+    const float& fraction_height = context->fracHeight;
+    const float& sample_fraction = context->sampleFraction;
+
+    std::vector<float>* ray_dist_x = &context->distX;
+    std::vector<float>* ray_dist_y = &context->distY;
+
+    Ray* ray_buffer = &context->rayBuffer[thread->start];
+    vec3* pixel = &(&context->frameBuffer)->at(thread->start);
+    Ray test;
+
+    for (int j = thread->start; j < thread->end; j++)
+    {
+        for (int i = 0; i < rpp; i++)
+        {
+            float u = ((float(j % width + ray_dist_x->at(i)) * fraction_width) * 2.0f) - 1.0f;
+            float v = ((float(j / width + ray_dist_y->at(i)) * fraction_height) * 2.0f) - 1.0f;
+
+            test.origin = get_position(mat_view);
+            test.direction = transform({u, v, -1.0f}, mat_frustrum);
+            *pixel += context->TracePath(test, ray_bounces);
+        }
+        // average color over pixel
+        *pixel *= sample_fraction;
+        // increment pointer
+        pixel++;
+    }    
+
+    pthread_exit(EXIT_SUCCESS);
+};
 
 //------------------------------------------------------------------------------
 /**
@@ -42,68 +102,38 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
 void
 Raytracer::Raytrace()
 {
-    float fracWidth = 1.0f / this->width;
-    float fracHeight = 1.0f / this->height;
-    float sampleFraction = 1.0f / this->rpp;
+    unsigned num_threads = 8;
+    unsigned pixels_per_thread = this->width * this->height / num_threads;
+    pthread_t tID[num_threads];
+    thread_info th_info[num_threads];
 
-    unsigned num_threads = 4;
-    unsigned active_threads = 0;
-
-    Ray ray;
-    vec3 color;
-
-
-
-    // for (int x = 0; x < this->width; ++x)
-    // {
-    //     for (int y = 0; y < this->height; ++y)
-    //     {
-    //         color = {0.0f, 0.0f, 0.0f};
-    //         for (int i = 0; i < this->rpp; ++i)
-    //         {
-    //             float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
-    //             float v = ((float(y + distY[i]) * fracHeight) * 2.0f) - 1.0f;
-
-    //             ray.origin = get_position(this->view);
-    //             ray.direction = transform({u, v, -1.0f}, this->frustum);
-    //             numras++;
-    //             color += this->TracePath(ray, this->bounces);
-    //         }
-
-    //         // divide by number of samples per pixel, to get the average of the distribution
-    //         color *= sampleFraction;
-
-    //         this->frameBuffer[y * this->width + x] += color;
-    //     }
-    // }
-}
-
-void* Raytracer::thread_task(void *arg)
-{
-    unsigned int *y = (unsigned int *)arg;
-    //long double *val = (long double *)arg;
-    //*val = owosqrt();
-    //printf("Thread ID: %lu\towo: %Lf\n", pthread_self(), owosqrt());
-    //Dutt
-    pthread_exit(EXIT_SUCCESS);
-}
-
-vec3
-Raytracer::RaytracePixel(const float& x, const float& y)
-{
-    vec3 color;
-    for (int i = 0; i < this->rpp; ++i)
+    // give threads info
+    for (int i = 0; i < num_threads; i++)
     {
-        float u = ((float(x + distX[i]) * fracWidth) * 2.0f) - 1.0f;
-        float v = ((float(y + distY[i]) * fracHeight) * 2.0f) - 1.0f;
-
-        vec3 direction = vec3(u, v, -1.0f);
-        direction = transform(direction, this->frustum);
-        
-        Ray ray = Ray(get_position(this->view), direction);
-        color += this->TracePath(ray, 0);
+        th_info[i] = {i * pixels_per_thread, i * pixels_per_thread + pixels_per_thread, this};
     }
-    return color;
+    // last thread receives remaining pixels
+    th_info[num_threads - 1].end += this->width * this->height % num_threads;
+
+
+    //------------ Create threads ------------------//
+    for (int i = 0; i < num_threads; i++)
+    {
+        if (pthread_create(&tID[i], NULL, th_raytrace, &(th_info[i])) != 0)
+        {
+            perror("pthread_create() error");
+        }
+    }
+
+    //------------ Join threads ------------------//
+    for (int i = 0; i < num_threads; i++)
+    {
+        if (pthread_join(tID[i], NULL) != 0)
+        {
+            perror("pthread_join() error");
+        }
+        //printf("thread raytrace done\n");
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -121,7 +151,7 @@ Raytracer::TracePath(Ray& ray, unsigned n)
     vec3 color {1.0f, 1.0f, 1.0f};
     Material* material;
 
-    while (n > 0) // count down
+    while (n-- > 0) // count down
     {
         if (Raycast(ray, hitPoint, hitNormal, distance, hitObject))
         {
@@ -130,14 +160,13 @@ Raytracer::TracePath(Ray& ray, unsigned n)
 
             ray.origin = hitPoint;
             BSDF(*material, ray, hitNormal);
-            numras++;
+            num_rays++;
             
-            n--;
             continue; // Ray bounce
         }
         return color *= this->Skybox(ray.direction); // Ray hits skybox
     }
-    return color *= {0.0f, 0.0f, 0.0f}; // Ray hits maximum bounces
+    return {0.0f, 0.0f, 0.0f}; // Ray hits maximum bounces
 }
 
 //------------------------------------------------------------------------------
