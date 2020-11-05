@@ -25,15 +25,6 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
     std::mt19937 generator (leet++);
     std::uniform_real_distribution<float> dis(0.0f, 1.0f);
 
-    // Allocate size for ray buffer
-    num_rays = w * h * rpp;
-    // size_t size = (sizeof(Ray) * num_rays);
-    // rayBuffer = (Ray*) malloc(size);
-    // if (rayBuffer == NULL) 
-    // {
-    //     fprintf(stderr, "Failed to allocate Ray buffer!");
-    // }
-
     // Pre calculate ray distribution
     for (int i = 0; i < this->rpp; i++) 
     {
@@ -41,6 +32,8 @@ Raytracer::Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& fr
         distY.push_back(dis(generator));
     }
 
+    num_rays = w * h * rpp;
+    aspectRatio = float(h) / float(w);
     fracWidth = 1.0f / this->width;
     fracHeight = 1.0f / this->height;
     sampleFraction = 1.0f / this->rpp;
@@ -68,30 +61,33 @@ void* th_raytrace(void *arg)
     const float& fraction_width = context->fracWidth;
     const float& fraction_height = context->fracHeight;
     const float& sample_fraction = context->sampleFraction;
+    const float& aspect_ratio = context->aspectRatio;
 
     std::vector<float>* ray_dist_x = &context->distX;
     std::vector<float>* ray_dist_y = &context->distY;
 
-    Ray* ray_buffer = &context->rayBuffer[thread->start];
     vec3* pixel = &(&context->frameBuffer)->at(thread->start);
-    Ray test;
+    Ray ray;
+
+    float u;
+    float v;
 
     for (int j = thread->start; j < thread->end; j++)
     {
         for (int i = 0; i < rpp; i++)
         {
-            float u = ((float(j % width + ray_dist_x->at(i)) * fraction_width) * 2.0f) - 1.0f;
-            float v = ((float(j / width + ray_dist_y->at(i)) * fraction_height) * 2.0f) - 1.0f;
+            u = ((float(j % width + ray_dist_x->at(i)) * fraction_width) * 2.0f) - 1.0f;
+            v = ((float(j / width + ray_dist_y->at(i)) * fraction_height) * 2.0f) - 1.0f;
 
-            test.origin = get_position(mat_view);
-            test.direction = transform({u, v, -1.0f}, mat_frustrum);
-            *pixel += context->TracePath(test, ray_bounces);
+            ray.origin = get_position(mat_view);
+            ray.direction = transform({u, v * aspect_ratio, -1.0f}, mat_frustrum);
+            *pixel += context->TracePath(ray, ray_bounces);
         }
         // average color over pixel
         *pixel *= sample_fraction;
         // increment pointer
         pixel++;
-    }    
+    }  
 
     pthread_exit(EXIT_SUCCESS);
 };
@@ -179,20 +175,20 @@ Raytracer::Raycast(const Ray& ray, vec3& hitPoint, vec3& hitNormal, float& dista
     HitResult closestHit;
     HitResult hit;
 
-    Object* obj;
-    Transform* trans;
+    Object* obj = bm._objects->data;
+    Transform* trans = bm._transforms->data;
 
     for (int i = 0; i < bm._objects->n; i++)
     {
-        obj = (bm._objects->data + i); // only works cause objects are in order
-        trans = (bm._transforms->data + i);
-
         if (IntersectSphere(hit, ray, closestHit.t, *trans))
         {
             closestHit = hit;
             closestHit.object = *obj;
             isHit = true;
         }
+
+        obj++;  // only works cause objects are in order
+        trans++;
     }
 
     hitPoint = closestHit.p;

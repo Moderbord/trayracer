@@ -15,7 +15,6 @@ public:
     Raytracer(const unsigned& w, const unsigned& h, std::vector<vec3>& frameBuffer, const unsigned& rpp, const unsigned& bounces, const BufferManager& bm);
     ~Raytracer()
     { 
-         free(rayBuffer);
     }
 
     // start raytracing!
@@ -66,11 +65,11 @@ public:
 
     size_t num_rays;
     BufferManager bm;
-    Ray* rayBuffer;
 
     std::vector<float> distX, distY;
     float fracWidth, fracHeight;
     float sampleFraction;
+    float aspectRatio;
 };
 
 inline void Raytracer::SetViewMatrix(const mat4& val)
