@@ -5,3 +5,16 @@ Image dimensions: 1000x500
 Rays per pixel: 20
 Max bounces per ray: 5
 
+// Final
+Completed in [0.967807] seconds, with a total of [16848563] rays, [17.409017] MRays/s 
+Image dimensions: 1000x500
+Rays per pixel: 20
+Max bounces per ray: 5
+
+// Final multi-threading
+Completed in [0.443571] seconds, with a total of [14334421] rays, [32.315964] MRays/s
+Image dimensions: 1000x500
+Rays per pixel: 20
+Max bounces per ray: 5
+
+
